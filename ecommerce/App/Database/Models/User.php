@@ -11,7 +11,12 @@ class User extends Model implements Crud {
     
     public function create()
     {
-        # code...
+        $query = "INSERT INTO users (first_name,last_name,email,phone,password,gender,
+        verification_code) VALUES (?, ?, ? , ? , ? , ? , ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ssssssi",$this->first_name,$this->last_name,$this->email,
+            $this->phone,$this->password,$this->gender,$this->verification_code);
+        return $stmt->execute();
     }
     public function read()
     {
@@ -121,7 +126,7 @@ class User extends Model implements Crud {
      */ 
     public function setPassword($password)
     {
-        $this->password = $password;
+        $this->password = password_hash($password,PASSWORD_BCRYPT);
 
         return $this;
     }
@@ -273,4 +278,23 @@ class User extends Model implements Crud {
 
         return $this;
     }
+
+
+    public function checkCode()
+    {
+        $query = "SELECT * FROM users WHERE email = ? AND verification_code = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('si',$this->email,$this->verification_code);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function makeUserVerified()
+    {
+        $query = "UPDATE users SET email_verified_at = ? WHERE email = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('ss',$this->email_verified_at,$this->email);
+        return $stmt->execute();
+    }
+    
 }
