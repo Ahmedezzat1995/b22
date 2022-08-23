@@ -1,7 +1,18 @@
-<?php 
+<?php
+
+use App\Database\Models\User;
+
 ob_start();
 session_start();
+
 include "vendor/autoload.php"; 
+
+if(isset($_COOKIE['user'])){
+    $user = new User;
+    $loggedInUser = $user->setEmail($_COOKIE['user'])
+    ->getUerByEmail()->fetch_object();
+    $_SESSION['user'] = $loggedInUser;
+}
 ?>
 <!doctype html>
 <html class="no-js" lang="zxx">
