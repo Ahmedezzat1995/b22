@@ -4,8 +4,8 @@ namespace App\Database\Models;
 use App\Database\Models\Contract\Crud;
 use App\Database\Models\Contract\Model;
 
-class Category extends Model implements Crud {
-    private $id,$name_en,$name_ar,$status,$image,$created_at,$updated_at;
+class Subcategory extends Model implements Crud {
+    private $id,$name_en,$name_ar,$status,$image,$category_id,$created_at,$updated_at;
     private const ACTIVE = 1;
     private const NOT_ACTIVE = 0;
 
@@ -163,14 +163,41 @@ class Category extends Model implements Crud {
         return $this;
     }
 
-    public function getCategory()
+    
+
+    /**
+     * Get the value of category_id
+     */ 
+    public function getCategory_id()
     {
-        $query = "SELECT id FROM categories WHERE id = ? AND status = ". self::ACTIVE;
+        return $this->category_id;
+    }
+
+    /**
+     * Set the value of category_id
+     *
+     * @return  self
+     */ 
+    public function setCategory_id($category_id)
+    {
+        $this->category_id = $category_id;
+
+        return $this;
+    }
+
+    public function getSubsByCat()
+    {
+        $query = "SELECT id,name_en FROM subcategories WHERE status ="
+         . self::ACTIVE . " AND category_id = {$this->category_id}";
+        return $this->conn->query($query);
+    }
+    public function getSubcategory()
+    {
+        $query = "SELECT id FROM subcategories WHERE id = ? AND status = ". self::ACTIVE;
         $stmt =  $this->conn->prepare($query);
         $stmt->bind_param('i',$this->id);
         $stmt->execute();
         return $stmt->get_result();
     }
-    
     
 }

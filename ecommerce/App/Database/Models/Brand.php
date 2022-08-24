@@ -4,7 +4,7 @@ namespace App\Database\Models;
 use App\Database\Models\Contract\Crud;
 use App\Database\Models\Contract\Model;
 
-class Category extends Model implements Crud {
+class Brand extends Model implements Crud {
     private $id,$name_en,$name_ar,$status,$image,$created_at,$updated_at;
     private const ACTIVE = 1;
     private const NOT_ACTIVE = 0;
@@ -13,7 +13,7 @@ class Category extends Model implements Crud {
 
     }
     public function read(){
-        $query = "SELECT id,name_en FROM categories WHERE status = ". self::ACTIVE;
+        $query = "SELECT id,name_en,image FROM brands WHERE status = ". self::ACTIVE;
         return $this->conn->query($query);
     }
     public function update(){
@@ -162,15 +162,15 @@ class Category extends Model implements Crud {
 
         return $this;
     }
-
-    public function getCategory()
+    public function getBrand()
     {
-        $query = "SELECT id FROM categories WHERE id = ? AND status = ". self::ACTIVE;
+        $query = "SELECT id FROM brands WHERE id = ? AND status = ". self::ACTIVE;
         $stmt =  $this->conn->prepare($query);
         $stmt->bind_param('i',$this->id);
         $stmt->execute();
         return $stmt->get_result();
     }
     
+
     
 }
