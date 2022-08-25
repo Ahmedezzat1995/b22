@@ -9,7 +9,7 @@ include "layouts/breadcrumb.php";
 
 if($_GET){
     if(isset($_GET['product'])){
-        if(is_numeric($_GET['product'])){
+        if(is_numeric($_GET['product'])){ 
             $pro = new Product;
             $productResult = $pro->setId($_GET['product'])->getProduct();
             if($productResult->num_rows == 1){
